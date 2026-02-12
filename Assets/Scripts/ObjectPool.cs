@@ -3,50 +3,43 @@ using UnityEngine;
 
 public class ObjectPool : MonoBehaviour
 {
-    public static ObjectPool Instance;
+    [SerializeField] private Cube _cubePrefab;
+    [SerializeField] private int _initialPoolSize = 30;
 
-    [Header("Настройки Пула")]
-    [SerializeField] private GameObject cubePrefab;
-    [SerializeField] private int initialPoolSize = 30;
-
-    private Queue<GameObject> poolQueue = new Queue<GameObject>();
+    private Queue<Cube> _poolQueue = new Queue<Cube>();
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
-
-        InitializePool();
-    }
-
-    private void InitializePool()
-    {
-        for (int i = 0; i < initialPoolSize; i++)
+        for (int i = 0; i < _initialPoolSize; i++)
         {
             CreateNewCube();
         }
     }
 
-    private GameObject CreateNewCube()
+    private Cube CreateNewCube()
     {
-        GameObject cube = Instantiate(cubePrefab, transform);
-        cube.SetActive(false); // Скрываем сразу
-        poolQueue.Enqueue(cube);
+        Cube cube = Instantiate(_cubePrefab, transform);
+        cube.Init(this);
+        cube.gameObject.SetActive(false);
+        _poolQueue.Enqueue(cube);
         return cube;
     }
 
-    public GameObject GetCube()
+    public Cube GetCube()
     {
-        if (poolQueue.Count == 0) CreateNewCube();
+        if (_poolQueue.Count == 0)
+        {
+            CreateNewCube();
+        }
 
-        GameObject cube = poolQueue.Dequeue();
-        cube.SetActive(true);
+        Cube cube = _poolQueue.Dequeue();
+        cube.gameObject.SetActive(true);
         return cube;
     }
 
-    public void ReturnCube(GameObject cube)
+    public void ReturnCube(Cube cube)
     {
-        cube.SetActive(false);
-        poolQueue.Enqueue(cube); 
+        cube.gameObject.SetActive(false);
+        _poolQueue.Enqueue(cube);
     }
 }

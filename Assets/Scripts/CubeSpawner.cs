@@ -1,35 +1,41 @@
+using System.Collections;
 using UnityEngine;
 
 public class CubeSpawner : MonoBehaviour
 {
-    [Header("Spawn Settings")]
-    [SerializeField] private float spawnInterval = 0.1f;
-    [SerializeField] private float spawnHeight = 15f;
-    [SerializeField] private float areaWidth = 10f;
-    [SerializeField] private float areaLength = 10f;
+    [SerializeField] private ObjectPool _pool;
+    [SerializeField] private float _spawnInterval = 0.1f;
+    [SerializeField] private float _spawnHeight = 15f;
+    [SerializeField] private float _areaWidth = 10f;
+    [SerializeField] private float _areaLength = 10f;
 
-    private float _timer;
-
-    private void Update()
+    private void Start()
     {
-        _timer -= Time.deltaTime;
+        StartCoroutine(SpawnRoutine());
+    }
 
-        if (_timer <= 0)
+    private IEnumerator SpawnRoutine()
+    {
+        var wait = new WaitForSeconds(_spawnInterval);
+
+        while (true)
         {
-            SpawnCube();
-            _timer = spawnInterval;
+            Spawn();
+            yield return wait;
         }
     }
 
-    private void SpawnCube()
+    private void Spawn()
     {
-        GameObject cube = ObjectPool.Instance.GetCube();
+        Cube cube = _pool.GetCube();
 
-        float randomX = Random.Range(-areaWidth / 2f, areaWidth / 2f);
-        float randomZ = Random.Range(-areaLength / 2f, areaLength / 2f);
-        Vector3 spawnPos = new Vector3(randomX, spawnHeight, randomZ);
+        float halfWidth = _areaWidth / 2f;
+        float halfLength = _areaLength / 2f;
 
-        cube.transform.position = spawnPos;
+        float x = Random.Range(-halfWidth, halfWidth);
+        float z = Random.Range(-halfLength, halfLength);
+
+        cube.transform.position = new Vector3(x, _spawnHeight, z);
         cube.transform.rotation = Quaternion.identity;
     }
 }
