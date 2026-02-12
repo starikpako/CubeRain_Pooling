@@ -29,11 +29,8 @@ public class CubeSpawner : MonoBehaviour
     {
         Cube cube = _pool.GetCube();
 
-        float halfWidth = _areaWidth / 2f;
-        float halfLength = _areaLength / 2f;
-
-        float x = Random.Range(-halfWidth, halfWidth);
-        float z = Random.Range(-halfLength, halfLength);
+        float x = Random.Range(-_areaWidth / 2f, _areaWidth / 2f);
+        float z = Random.Range(-_areaLength / 2f, _areaLength / 2f);
 
         cube.transform.position = new Vector3(x, _spawnHeight, z);
         cube.transform.rotation = Quaternion.identity;
