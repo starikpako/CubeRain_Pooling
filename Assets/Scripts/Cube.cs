@@ -19,6 +19,11 @@ public class Cube : MonoBehaviour
         _colorChanger = GetComponent<ColorChanger>();
         _rigidbody = GetComponent<Rigidbody>();
         _defaultColor = GetComponent<Renderer>().material.color;
+
+        if (_rigidbody == null)
+        {
+            Debug.LogError("Rigidbody component is missing on " + gameObject.name);
+        }
     }
 
     private void OnEnable()
@@ -38,7 +43,7 @@ public class Cube : MonoBehaviour
     {
         if (_hasTouchedPlatform == false)
         {
-            if (collision.gameObject.TryGetComponent(out Platform platform))
+            if (collision.gameObject.TryGetComponent(out Platform _))
             {
                 _hasTouchedPlatform = true;
                 _colorChanger.SetColor(_hitColor);

@@ -9,6 +9,8 @@ public class CubeSpawner : MonoBehaviour
     [SerializeField] private float _areaWidth = 10f;
     [SerializeField] private float _areaLength = 10f;
 
+    private const float CenterDivider = 2f;
+
     private void Start()
     {
         StartCoroutine(SpawnRoutine());
@@ -18,7 +20,7 @@ public class CubeSpawner : MonoBehaviour
     {
         var wait = new WaitForSeconds(_spawnInterval);
 
-        while (true)
+        while (enabled)
         {
             Spawn();
             yield return wait;
@@ -29,8 +31,11 @@ public class CubeSpawner : MonoBehaviour
     {
         Cube cube = _pool.GetCube();
 
-        float x = Random.Range(-_areaWidth / 2f, _areaWidth / 2f);
-        float z = Random.Range(-_areaLength / 2f, _areaLength / 2f);
+        float halfWidth = _areaWidth / CenterDivider;
+        float halfLength = _areaLength / CenterDivider;
+
+        float x = Random.Range(-halfWidth, halfWidth);
+        float z = Random.Range(-halfLength, halfLength);
 
         cube.transform.position = new Vector3(x, _spawnHeight, z);
         cube.transform.rotation = Quaternion.identity;
