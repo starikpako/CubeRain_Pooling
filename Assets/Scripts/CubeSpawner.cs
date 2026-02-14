@@ -3,13 +3,13 @@ using UnityEngine;
 
 public class CubeSpawner : MonoBehaviour
 {
-    [SerializeField] private ObjectPool _pool;
+    private const float CenterDivider = 2f;
+
+    [SerializeField] private CubePool _pool;
     [SerializeField] private float _spawnInterval = 0.1f;
     [SerializeField] private float _spawnHeight = 15f;
     [SerializeField] private float _areaWidth = 10f;
     [SerializeField] private float _areaLength = 10f;
-
-    private const float CenterDivider = 2f;
 
     private void Start()
     {

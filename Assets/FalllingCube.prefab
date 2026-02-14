@@ -156,7 +156,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CubeBehavior
   _minLifeTime: 2
   _maxLifeTime: 5
-  _hitColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!114 &7209419956143275601
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -169,3 +168,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 932ccbd030c517e43900bb8800976f45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ColorChanger
+  _hitColor: {r: 1, g: 0.049433887, b: 0, a: 1}

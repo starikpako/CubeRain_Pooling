@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -6,37 +7,25 @@ public class Cube : MonoBehaviour
 {
     [SerializeField] private float _minLifeTime = 2f;
     [SerializeField] private float _maxLifeTime = 5f;
-    [SerializeField] private Color _hitColor = Color.red;
 
     private ColorChanger _colorChanger;
     private Rigidbody _rigidbody;
-    private Color _defaultColor;
     private bool _hasTouchedPlatform;
-    private ObjectPool _pool;
+
+    public event Action<Cube> Expired;
 
     private void Awake()
     {
         _colorChanger = GetComponent<ColorChanger>();
         _rigidbody = GetComponent<Rigidbody>();
-        _defaultColor = GetComponent<Renderer>().material.color;
-
-        if (_rigidbody == null)
-        {
-            Debug.LogError("Rigidbody component is missing on " + gameObject.name);
-        }
     }
 
     private void OnEnable()
     {
         _hasTouchedPlatform = false;
-        _colorChanger.SetColor(_defaultColor);
+        _colorChanger.ResetToDefault();
         _rigidbody.linearVelocity = Vector3.zero;
         _rigidbody.angularVelocity = Vector3.zero;
-    }
-
-    public void Init(ObjectPool pool)
-    {
-        _pool = pool;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -46,7 +35,7 @@ public class Cube : MonoBehaviour
             if (collision.gameObject.TryGetComponent(out Platform _))
             {
                 _hasTouchedPlatform = true;
-                _colorChanger.SetColor(_hitColor);
+                _colorChanger.ApplyHitColor();
                 StartCoroutine(DeactivateAfterDelay());
             }
         }
@@ -54,8 +43,10 @@ public class Cube : MonoBehaviour
 
     private IEnumerator DeactivateAfterDelay()
     {
-        float delay = Random.Range(_minLifeTime, _maxLifeTime);
+        float delay = UnityEngine.Random.Range(_minLifeTime, _maxLifeTime);
         yield return new WaitForSeconds(delay);
-        _pool.ReturnCube(this);
+
+        Expired?.Invoke(this);
+        gameObject.SetActive(false);
     }
 }
